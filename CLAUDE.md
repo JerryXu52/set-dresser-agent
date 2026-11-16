@@ -13,6 +13,11 @@ This folder is a Maya tool. Read this before touching anything.
 - Headless, without me watching:
   `/Applications/Autodesk/maya2026/Maya.app/Contents/bin/mayapy -c "import maya.standalone; maya.standalone.initialize(); import set_dresser; set_dresser.scatter(5, 2); import maya.cmds as cmds; print(cmds.ls('rock*', 'tree*'))"`
 - "Done" means you ran it and looked at what it made. Not that it imported.
+- Port gotchas (seen on Maya 2026):
+  - A line that returns `None` runs **twice**. Make each line return a value,
+    e.g. `[set_dresser.clear(), 'ok'][1]`. `scatter` returns its counts for this reason.
+  - Names don't survive between sends: each send starts without the imports from the last.
+    Use `__import__('set_dresser')` or import inside the same line. `sys.path` and loaded modules do persist.
 
 ## Rules of the tool
 - The engine (`set_dresser.py`) has no UI in it. The window (`set_dresser_ui.py`) only reads controls and calls the engine.
